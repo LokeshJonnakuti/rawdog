@@ -61,7 +61,7 @@ def function_2():
         with open(filename, 'r') as file:
             # Read the first three lines of the file to understand its structure
             for _ in range(3):
-                print(file.readline().strip())
+                print(file.readline(5_000_000).strip())
 
     print("NASDAQ CSV Structure:")
     print_file_structure('nasdaq.csv')
