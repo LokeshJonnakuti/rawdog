@@ -31,7 +31,7 @@ def function_1():
 
     # Fetch the content of the Wikipedia page on Fourier transformations
     url = "https://en.wikipedia.org/wiki/Fourier_transform"
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
 
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, "html.parser")
