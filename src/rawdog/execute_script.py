@@ -6,6 +6,7 @@ import tempfile
 from subprocess import DEVNULL
 
 from rawdog.utils import rawdog_dir
+from security import safe_command
 
 
 # Script execution environment
@@ -17,8 +18,7 @@ def get_rawdog_python_executable():
         python_executable = venv_dir / "bin" / "python"
     if not venv_dir.exists():
         print(f"Creating virtual environment in {venv_dir}...")
-        subprocess.run(
-            [sys.executable, "-m", "venv", str(venv_dir)],
+        safe_command.run(subprocess.run, [sys.executable, "-m", "venv", str(venv_dir)],
             stdout=DEVNULL,
             stderr=DEVNULL,
             check=True,
@@ -29,8 +29,7 @@ def get_rawdog_python_executable():
 def install_pip_packages(*packages: str):
     python_executable = get_rawdog_python_executable()
     print(f"Installing {', '.join(packages)} with pip...")
-    return subprocess.run(
-        [python_executable, "-m", "pip", "install", *packages],
+    return safe_command.run(subprocess.run, [python_executable, "-m", "pip", "install", *packages],
         capture_output=True,
         check=True,
     )
@@ -46,8 +45,7 @@ def _execute_script_in_subprocess(script) -> tuple[str, str, int]:
             tmp_script.write(script)
             tmp_script.flush()
 
-            process = subprocess.Popen(
-                [python_executable, tmp_script_name],
+            process = safe_command.run(subprocess.Popen, [python_executable, tmp_script_name],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,  # Raises EOF error if subprocess asks for input
